@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+const left=document.createElement('div');
+const right=document.createElement('div');
+
+
+left.innerHTML=`
+<div class="issue"><span class="sev">Critical</span>
+<h4 style="margin:6px 0">Unsubstantiated Superiority Claim</h4>
+<div class="sub">“world’s most advanced IOL technology”</div>
+<div class="sub">FDA: 21 CFR 202.1(e)(6)(i) – Claims must be substantiated</div>
+</div>
+<div class="issue" style="background:#FFFAEB;margin-top:12px"><span class="sev" style="color:#7a5a00;background:#FEF0C7;border-color:#FDE68A">High</span>
+<h4 style="margin:6px 0">Missing Risk Information</h4>
+<div class="sub">Clinical mention without context / ISI</div>
+<div class="sub">FTC Advertising Substantiation; include ISI link</div>
+</div>`;
+
+
+right.innerHTML=`
+<div class="alt"><span class="ok">Revised Claim</span>
+<div class="sub" style="margin-top:6px">“Clareon PanOptix IOL — an advanced trifocal lens designed to provide near, intermediate, and distance vision.”</div>
+<ul class="sub"><li>Removes superiority language</li><li>Anchors to approved indications</li></ul>
+</div>
+<div class="alt" style="margin-top:12px;background:#ECFEFF;border-color:#CFFAFE"><span class="ok" style="color:#0c4a6e;background:#E0F2FE;border-color:#BAE6FD">Added Disclaimer</span>
+<div class="sub" style="margin-top:6px">“Based on clinical study of 123 patients. Individual results may vary. See full prescribing information.”</div>
+</div>`;
+
+
+details.appendChild(left); details.appendChild(right);
+
+
+// Chat widget logic (keyword demo)
+const fab=document.getElementById('chatFab');
+const chat=document.getElementById('chat');
+const log=document.getElementById('log');
+const q=document.getElementById('q');
+const send=document.getElementById('send');
+const tips={
+unsubstantiated:`Unsubstantiated claims are statements that imply clinical proof without adequate evidence. For superiority ("best", "most advanced"), FDA 21 CFR 202.1(e)(6)(i) expects head‑to‑head data supporting the claim. Suggest: rephrase to performance within approved indications or cite specific study endpoints.`,
+disclaimer:`When a claim references benefits or studies, include Important Safety Information (ISI) and context (population, n, endpoints). Add a line like: “See full prescribing information; individual results may vary.”`,
+puffery:`General praise like “revolutionary” or “exceptional” can be considered puffery if not tied to measurable outcomes. Prefer measurable attributes or remove superlatives in regulated copy.`
+};
+
+
+function add(role,text){
+const b=document.createElement('div'); b.className='msg '+role; b.textContent=text; log.appendChild(b); log.scrollTop=log.scrollHeight; }
+
+
+function answer(text){
+const t=text.toLowerCase();
+if(t.includes('unsubstantiated')||t.includes('superiority')) return tips.unsubstantiated;
+if(t.includes('disclaimer')||t.includes('isi')||t.includes('risk')) return tips.disclaimer;
+if(t.includes('puffery')||t.includes('revolutionary')||t.includes('exceptional')) return tips.puffery;
+return 'I can explain flags, references, and compliant alternatives. Try asking “Why is this unsubstantiated?” or click “Ask about this →” under a flag.';
+}
+
+
+fab.addEventListener('click',()=>{chat.style.display = chat.style.display==='flex' ? 'none' : 'flex';});
+send.addEventListener('click',()=>{const txt=q.value.trim(); if(!txt) return; add('me',txt); setTimeout(()=>add('ai',answer(txt)),300); q.value='';});
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){send.click();}}
+);
+
+
+document.querySelectorAll('.chip').forEach(ch=>ch.addEventListener('click',()=>{q.value=ch.dataset.q; send.click();}));
+document.addEventListener('click',e=>{
+if(e.target.classList.contains('ask')){e.preventDefault(); q.value = 'Explain this: '+(data.flags[e.target.dataset.i]?.type||'flag'); send.click();}
+});
+
+
+function getCss(name){return getComputedStyle(document.documentElement).getPropertyValue(name)}
+</script>
+</body>
+</html>
