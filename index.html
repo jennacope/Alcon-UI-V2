@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+.spinner{width:64px;height:64px;border-radius:50%;border:6px solid #dbeafe;border-top-color:var(--alcon);animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in"><div class="brand"><div class="logo"></div><span>Alcon</span><span style="color:#6b7280;font-weight:500">MLR Pre‑Screening Agent</span></div><div style="font-weight:600;color:#334155">Upload</div></div></header>
+
+
+<main class="wrap">
+<div class="grid">
+<section class="card pad">
+<h2>Content Review</h2>
+<div class="sub">Upload promotional content or paste text. Choose the product, then analyze.</div>
+<div class="drop"><strong>Drag & drop files</strong> or click to upload<br><span class="sub">PDF, DOC, DOCX, TXT (max 10MB)</span></div>
+<label class="sub" style="display:block;margin-top:10px">Or paste text</label>
+<textarea id="paste" placeholder="Paste your promotional copy here…"></textarea>
+<div class="row">
+<div class="meta"><span id="count">0</span>/5000 chars</div>
+<div style="display:flex;gap:8px;align-items:center">
+<select id="product">
+<option>Clareon PanOptix IOL</option>
+<option>Total 30 Contact Lens</option>
+</select>
+<button id="analyze" class="btn-primary">Analyze Content</button>
+</div>
+</div>
+</section>
+
+
+<aside class="card pad">
+<h3 style="margin:0 0 10px">What happens next?</h3>
+<ol class="sub" style="margin:0 0 10px 18px">
+<li>We run pre‑screening vs FDA/FTC and approved claims.</li>
+<li>We compute a compliance score and list flags.</li>
+<li>You’ll see recommendations and can ask questions in chat.</li>
+</ol>
+<div class="sub">This is a prototype: scoring is simulated for demo flow.</div>
+</aside>
+</div>
+</main>
+
+
+<div class="overlay" id="overlay"><div style="display:grid;gap:12px;place-items:center"><div class="spinner"></div><div class="sub">Analyzing content…</div></div></div>
+
+
+<script>
+const t=document.getElementById('paste');
+const c=document.getElementById('count');
+const b=document.getElementById('analyze');
+const o=document.getElementById('overlay');
+t.addEventListener('input',()=>{c.textContent=t.value.length});
+
+
+// Minimal demo: store payload in localStorage and route to results
+b.addEventListener('click',()=>{
+const text=t.value.trim();
+const product=document.getElementById('product').value;
+// Compute a demo score and sample flags
+const len=text.length||1;
+const score=Math.min(96,Math.max(42,Math.round(42+Math.log(len)*10)));
+const flags=[
+{type:'Unsubstantiated Claim',severity:'Critical',snippet:'world\'s most advanced IOL',ref:'21 CFR 202.1(e)(6)(i)'},
+{type:'Missing Disclaimer',severity:'High',snippet:'Clinical study mentioned without citation',ref:'FTC Advertising Substantiation'},
+{type:'Puffery Language',severity:'Medium',snippet:'revolutionary, exceptional',ref:'Internal Style Guide'}
+];
+const payload={product,text,score,flags,ts:Date.now()};
+localStorage.setItem('alcon_demo_payload',JSON.stringify(payload));
+o.style.display='flex';
+setTimeout(()=>{location.href='results.html';},1200);
+});
+</script>
+</body>
+</html>
